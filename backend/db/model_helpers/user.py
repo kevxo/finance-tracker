@@ -17,3 +17,8 @@ def register_new_user(user: UserCreate, db: Session):
     db.refresh(user)
 
     return user
+
+def get_user(username: str, db: Session):
+    user = db.query(User).filter(User.username == username).first()
+
+    return user
