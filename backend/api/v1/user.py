@@ -7,7 +7,7 @@ from db.model_helpers.user import register_new_user
 
 router = APIRouter()
 
-@router.post("/api/v1/register_user", response_model=ShowUser, status_code=status.HTTP_201_CREATED)
+@router.post("/api/v1/register", response_model=ShowUser, status_code=status.HTTP_201_CREATED)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     user = register_new_user(user = user, db = db)
 
