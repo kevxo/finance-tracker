@@ -5,7 +5,7 @@ from db.base_class import Base
 
 class Budget(Base):
     uuid = Column(String(36), primary_key=True, index=True)
-    user_uuid = Column(String, ForeignKey('user.uuid'))
+    user_uuid = Column(String, ForeignKey("user.uuid"))
     budget_amount = Column(Float, nullable=False)
     month = Column(Date, nullable=False)
 
