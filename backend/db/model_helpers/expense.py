@@ -18,3 +18,19 @@ def create_new_user_expense(
     db.refresh(new_expense)
 
     return new_expense
+
+
+def list_expenses(db: Session, user_uuid: str):
+    expenses = db.query(Expense).filter(Expense.user_uuid == user_uuid).all()
+
+    return expenses
+
+
+def get_single_expense(db: Session, user_uuid: str, expense_uuid: str):
+    expense = (
+        db.query(Expense)
+        .filter(Expense.user_uuid == user_uuid, Expense.uuid == expense_uuid)
+        .first()
+    )
+
+    return expense
