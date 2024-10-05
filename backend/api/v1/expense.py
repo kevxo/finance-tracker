@@ -10,6 +10,7 @@ from db.model_helpers.expense import (
     list_expenses,
     get_single_expense,
     update_expense,
+    delete_user_expense,
 )
 
 from api.v1.login import get_current_user
@@ -104,3 +105,25 @@ def patch_expense(
         )
 
     return updated_expense
+
+
+@router.delete("/api/v1/users/{user_uuid}/expenses/{expense_uuid}")
+def delete_expense(
+    user_uuid: str,
+    expense_uuid: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if user_uuid != current_user.uuid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
+        )
+
+    message = delete_user_expense(db, expense_uuid)
+
+    if message.get("error"):
+        raise HTTPException(
+            detail=message.get("error"), status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+    return {"message": f"Expense with uuid {expense_uuid} was deleted successfully."}
