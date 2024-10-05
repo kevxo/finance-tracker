@@ -108,3 +108,30 @@ def test_update_expense(client, db_session):
 
             assert response.status_code == 200
             assert response.json()["amount"] == update_body["amount"]
+
+
+def test_delete_expense(client, db_session):
+    """Test delete expense"""
+
+    expense = create_random_expense(db_session)
+
+    with patch("jose.jwt.encode") as mock_encode:
+        mock_encode.return_value = "mocked_token"
+        body = {"username": "kevxo", "password": "Hello!"}
+
+        login = client.post("/api/v1/login", data=body)
+        token = login.json()["access_token"]
+
+        with patch("jose.jwt.decode") as mock_decode:
+            mock_decode.return_value = {"sub": "kevxo"}
+
+            response = client.delete(
+                f"/api/v1/users/{expense.user_uuid}/expenses/{expense.uuid}",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+
+            assert response.status_code == 200
+            assert (
+                response.json()["message"]
+                == f"Expense with uuid {expense.uuid} was deleted successfully."
+            )
