@@ -47,3 +47,15 @@ def update_expense(
     updated_expense = get_single_expense(db, user_uuid, expense_uuid)
 
     return updated_expense
+
+
+def delete_user_expense(db: Session, expense_uuid: str):
+    expense = db.query(Expense).filter(Expense.uuid == expense_uuid)
+
+    if not expense:
+        return {"error": f"Could not find user with uuid {expense_uuid}"}
+
+    expense.delete()
+    db.commit()
+
+    return {"msg": f"User with uuid {expense_uuid} deleted successfully"}
