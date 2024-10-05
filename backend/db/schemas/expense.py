@@ -1,4 +1,6 @@
+import datetime
 from pydantic import BaseModel
+from typing import Optional
 from datetime import date
 
 
@@ -17,3 +19,9 @@ class ShowUserExpense(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UpdateUserExpense(BaseModel):
+    amount: Optional[float] = None
+    category: Optional[str] = None
+    date: Optional[datetime.date] = None
