@@ -2,13 +2,15 @@ from fastapi import APIRouter, status, HTTPException, Depends
 from sqlalchemy.orm import Session
 from typing import List
 
-from db.schemas.expense import UserExpenseCreate, ShowUserExpense
+from db.schemas.expense import UserExpenseCreate, ShowUserExpense, UpdateUserExpense
 from db.db_session import get_db
 from db.models.user import User
 from db.model_helpers.expense import (
     create_new_user_expense,
     list_expenses,
     get_single_expense,
+    update_expense,
+    delete_user_expense,
 )
 
 from api.v1.login import get_current_user
@@ -17,7 +19,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/api/v1/user/{user_uuid}/expenses",
+    "/api/v1/users/{user_uuid}/expenses",
     response_model=ShowUserExpense,
     status_code=status.HTTP_201_CREATED,
 )
@@ -39,7 +41,7 @@ def create_expense(
     return user_expense
 
 
-@router.get("/api/v1/user/{user_uuid}/expenses", response_model=List[ShowUserExpense])
+@router.get("/api/v1/users/{user_uuid}/expenses", response_model=List[ShowUserExpense])
 def get_all_expenses(
     user_uuid: str,
     db: Session = Depends(get_db),
@@ -55,7 +57,7 @@ def get_all_expenses(
     return expenses
 
 
-@router.get("/api/v1/user/{user_uuid}/expenses/{expense_uuid}")
+@router.get("/api/v1/users/{user_uuid}/expenses/{expense_uuid}")
 def get_expense(
     user_uuid: str,
     expense_uuid: str,
@@ -76,3 +78,52 @@ def get_expense(
         )
 
     return expense
+
+
+@router.patch(
+    "/api/v1/users/{user_uuid}/expenses/{expense_uuid}", response_model=ShowUserExpense
+)
+def patch_expense(
+    user_uuid: str,
+    expense_uuid: str,
+    body: UpdateUserExpense,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if user_uuid != current_user.uuid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
+        )
+
+    update_data = body.model_dump(exclude_unset=True)
+    updated_expense = update_expense(db, expense_uuid, user_uuid, update_data)
+
+    if not updated_expense:
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Expense with uuid {expense_uuid} was not found.",
+        )
+
+    return updated_expense
+
+
+@router.delete("/api/v1/users/{user_uuid}/expenses/{expense_uuid}")
+def delete_expense(
+    user_uuid: str,
+    expense_uuid: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if user_uuid != current_user.uuid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
+        )
+
+    message = delete_user_expense(db, expense_uuid)
+
+    if message.get("error"):
+        raise HTTPException(
+            detail=message.get("error"), status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+    return {"message": f"Expense with uuid {expense_uuid} was deleted successfully."}
