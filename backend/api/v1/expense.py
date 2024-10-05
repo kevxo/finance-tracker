@@ -18,7 +18,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/api/v1/user/{user_uuid}/expenses",
+    "/api/v1/users/{user_uuid}/expenses",
     response_model=ShowUserExpense,
     status_code=status.HTTP_201_CREATED,
 )
@@ -40,7 +40,7 @@ def create_expense(
     return user_expense
 
 
-@router.get("/api/v1/user/{user_uuid}/expenses", response_model=List[ShowUserExpense])
+@router.get("/api/v1/users/{user_uuid}/expenses", response_model=List[ShowUserExpense])
 def get_all_expenses(
     user_uuid: str,
     db: Session = Depends(get_db),
@@ -56,7 +56,7 @@ def get_all_expenses(
     return expenses
 
 
-@router.get("/api/v1/user/{user_uuid}/expenses/{expense_uuid}")
+@router.get("/api/v1/users/{user_uuid}/expenses/{expense_uuid}")
 def get_expense(
     user_uuid: str,
     expense_uuid: str,
