@@ -1,7 +1,7 @@
 import uuid
 
 from sqlalchemy.orm import Session
-from db.schemas.expense import UserExpenseCreate
+from db.schemas.expense import UserExpenseCreate, UpdateUserExpense
 from db.models.user import User
 from db.models.expense import Expense
 
@@ -34,3 +34,16 @@ def get_single_expense(db: Session, user_uuid: str, expense_uuid: str):
     )
 
     return expense
+
+
+def update_expense(
+    db: Session, expense_uuid: str, user_uuid: str, update_data: UpdateUserExpense
+):
+    db.query(Expense).filter(
+        Expense.uuid == expense_uuid, Expense.user_uuid == user_uuid
+    ).update(update_data)
+    db.commit()
+
+    updated_expense = get_single_expense(db, user_uuid, expense_uuid)
+
+    return updated_expense
