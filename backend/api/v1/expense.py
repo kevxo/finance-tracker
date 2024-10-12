@@ -14,6 +14,7 @@ from db.model_helpers.expense import (
 )
 
 from api.v1.login import get_current_user
+from helpers.authentication import verify_current_user
 
 router = APIRouter()
 
@@ -29,10 +30,7 @@ def create_expense(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if user_uuid != current_user.uuid:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
-        )
+    verify_current_user(user_uuid, current_user.uuid)
 
     user_expense = create_new_user_expense(
         expense=expense, current_user=current_user, db=db
@@ -47,10 +45,7 @@ def get_all_expenses(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if user_uuid != current_user.uuid:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
-        )
+    verify_current_user(user_uuid, current_user.uuid)
 
     expenses = list_expenses(db, user_uuid)
 
@@ -64,10 +59,7 @@ def get_expense(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if user_uuid != current_user.uuid:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
-        )
+    verify_current_user(user_uuid, current_user.uuid)
 
     expense = get_single_expense(db, user_uuid, expense_uuid)
 
@@ -90,10 +82,7 @@ def patch_expense(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if user_uuid != current_user.uuid:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
-        )
+    verify_current_user(user_uuid, current_user.uuid)
 
     update_data = body.model_dump(exclude_unset=True)
     updated_expense = update_expense(db, expense_uuid, user_uuid, update_data)
@@ -114,10 +103,7 @@ def delete_expense(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if user_uuid != current_user.uuid:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
-        )
+    verify_current_user(user_uuid, current_user.uuid)
 
     message = delete_user_expense(db, expense_uuid)
 
