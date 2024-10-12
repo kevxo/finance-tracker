@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from fastapi import status, HTTPException
 from typing import Optional
 from jose import jwt
 
@@ -34,3 +35,10 @@ def authenticate_user(username: str, password: str, db: Session):
         return False
 
     return user
+
+
+def verify_current_user(user_uuid: str, current_user_uuid: str):
+    if user_uuid != current_user_uuid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="User in not authorized."
+        )
