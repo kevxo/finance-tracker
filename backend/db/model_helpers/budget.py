@@ -14,3 +14,13 @@ def create_new_budget(budget: CreateBudget, db: Session, user: User):
     db.refresh(budget)
 
     return budget
+
+
+def retrieve_budget(budget_uuid: str, user_uuid: str, db: Session):
+    budget = (
+        db.query(Budget)
+        .filter(Budget.uuid == budget_uuid, Budget.user_uuid == user_uuid)
+        .first()
+    )
+
+    return budget
