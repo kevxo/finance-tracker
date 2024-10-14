@@ -11,3 +11,7 @@ class ShowBudget(BaseModel):
     uuid: UUID4
     budget_amount: float
     month: date
+    user_uuid: UUID4
+
+    class Config:
+        orm_mode = True
