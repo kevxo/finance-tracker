@@ -24,8 +24,6 @@ export const loginUser = async (credentials: UserLogin) => {
 
         localStorage.setItem('token', data.access_token);
 
-        console.log('Token stored:', data.access_token);
-
     } catch (err) {
         console.error(err)
     }
