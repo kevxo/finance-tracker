@@ -25,6 +25,10 @@ export function Login() {
     }
   }
 
+  const handleSignUp = () => {
+    navigate('/signUp')
+  }
+
     return (
       <div>
         <div className="flex justify-center" >
@@ -48,7 +52,7 @@ export function Login() {
             </div>
             <div className="flex justify-center space-x-4">
               <Button type="submit" onClick={(e: { preventDefault: () => void; }) => handleLogin(e)}>Login</Button>
-              <Button type="submit">Sign Up</Button>
+              <Button type="submit" onClick={() => handleSignUp()}>Sign Up</Button>
             </div>
           </form>
       </div>
