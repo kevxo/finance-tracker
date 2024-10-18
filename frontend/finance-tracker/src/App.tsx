@@ -1,5 +1,7 @@
 import { Login } from '../src/Componenets/Login/index'
 import { Dashboard } from '../src/Componenets/Dashboard/index';
+import { SignUp } from '../src/Componenets/SignUp/index'
+import { NavbarComponent } from '../src/Componenets/Navbar/index';
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,10 +11,14 @@ import {
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />}/>
-      </Routes>
+      <div>
+        <NavbarComponent />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />}/>
+          <Route path="/signUp" element={<SignUp />} />
+        </Routes>
+      </div>
     </Router>
   )
 }
