@@ -1,4 +1,3 @@
-// eslint-disable-next-line react-refresh/only-export-components
 const URL: string = "http://127.0.0.1:8000/api/v1/login"
 
 interface UserLogin {
