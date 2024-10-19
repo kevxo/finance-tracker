@@ -1,14 +1,17 @@
-import { Login } from '../src/Componenets/Login/index'
-import { Dashboard } from '../src/Componenets/Dashboard/index';
-import { SignUp } from '../src/Componenets/SignUp/index'
-import { NavbarComponent } from '../src/Componenets/Navbar/index';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
 } from "react-router-dom";
 
-function App() {
+import { Dashboard } from './Components/Dashboard/index';
+import { Login,  } from './Components/Login/index'
+import { NavbarComponent } from './Components/Navbar/index';
+import { SignUp } from './Components/SignUp/index'
+
+
+export function App() {
   return (
     <Router>
       <div>
@@ -23,4 +26,3 @@ function App() {
   )
 }
 
-export default App
