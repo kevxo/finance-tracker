@@ -25,11 +25,17 @@ export function NavbarComponent() {
       </NavbarBrand>
       <NavbarToggle />
       <NavbarCollapse>
-        {token ? (
+        {token && (
             <Link to="/" onClick={handleLogout}>
                 Logout
             </Link>
-        ) : null}
+        )}
+
+        {window.location.pathname === '/signUp' && (
+          <Link to="/">
+            Login
+          </Link>
+        )}
       </NavbarCollapse>
     </Navbar>
   );
