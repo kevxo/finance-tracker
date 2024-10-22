@@ -24,7 +24,7 @@ def login(
             detail="Incorrect username or password",
         )
 
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = create_access_token(data={"sub": user.username, "uuid": user.uuid})
 
     return {"access_token": access_token, "token_type": "bearer"}
 
