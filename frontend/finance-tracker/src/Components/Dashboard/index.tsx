@@ -11,12 +11,13 @@ export function Dashboard() {
     useEffect(() => {
         const userExpenses = async () => {
             if (token) {
-                setExpenses(await getUserExpenses(token))
+                const expensesData = await getUserExpenses(token)
+                setExpenses(expensesData)
             }
         }
 
         userExpenses()
-    }, [expenses?.length, token])
+    }, [token])
 
     return (
         <div className="overflow-x-auto">
@@ -24,7 +25,7 @@ export function Dashboard() {
             <Table>
                 <TableHead>
                 <TableHeadCell>Category</TableHeadCell>
-                <TableHeadCell>amount</TableHeadCell>
+                <TableHeadCell>Amount</TableHeadCell>
                 <TableHeadCell>Date</TableHeadCell>
                 </TableHead>
                 <TableBody className="divide-y">
