@@ -1,16 +1,41 @@
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from "flowbite-react";
+import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+
+
+
+interface DecodedToken {
+  exp: number; // Expiration time in seconds
+}
+
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const decodedToken: DecodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000; // Current time in seconds
+    return decodedToken.exp < currentTime;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    return true; // If token is invalid, treat it as expired
+  }
+};
 
 export function NavbarComponent() {
     const [token, setToken] = useState<string | null>(null)
     const location = useLocation()
+    const navigate = useNavigate()
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token')
 
-        setToken(storedToken);
-    }, [location])
+        if (storedToken && isTokenExpired(storedToken)) {
+          handleLogout();
+          navigate('/')
+        } else {
+          setToken(storedToken);
+        }
+
+    }, [location, navigate])
 
     const handleLogout = () => {
         localStorage.removeItem('token');
