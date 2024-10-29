@@ -1,5 +1,4 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
-import React from 'react';
 import { MemoryRouter, Routes, Route} from 'react-router-dom';
 
 import { Login } from './index';
