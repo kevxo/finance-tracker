@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 import { getUserExpenses } from "../../Services/APIs/Expenses";

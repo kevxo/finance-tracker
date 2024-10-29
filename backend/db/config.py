@@ -17,7 +17,11 @@ class Settings:
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "finance_tracker")
 
-    DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    # for docker puproses we use @db:5432, but to test locally change to @localhost:5432
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}",
+    )
 
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ALGORITHM = "HS256"

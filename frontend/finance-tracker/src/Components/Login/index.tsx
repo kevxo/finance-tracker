@@ -1,6 +1,6 @@
 
 import { Button, Label, TextInput } from "flowbite-react"
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 
 import { loginUser } from "../../Services/APIs/Login";
