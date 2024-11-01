@@ -3,7 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: backend_service
+    container_name: backend-service
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     env_file:
       - ./backend/.env
@@ -19,7 +19,7 @@ services:
     build:
       context: ./frontend/finance-tracker
       dockerfile: Dockerfile
-    container_name: frontend_service
+    container_name: frontend-service
     ports:
       - "3000:80"
     depends_on:
