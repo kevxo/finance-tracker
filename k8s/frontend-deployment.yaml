@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: frontend-service
-        image: finance-tracker-frontend
+        image:  kevxo09/finance-tracker-frontend:latest
         ports:
         - containerPort: 80
       imagePullSecrets:
-        - name: my-registry-secret
+      - name: my-registry-secret
