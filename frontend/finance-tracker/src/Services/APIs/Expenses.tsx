@@ -1,10 +1,12 @@
 import { jwtDecode } from "jwt-decode";
 
+const URI: string = import.meta.env.VITE_API_URL
+
 export const getUserExpenses = async (token: string) => {
     const decode = jwtDecode(token);
     const userUuid = decode?.uuid;
 
-    const url: string = `http://127.0.0.1:8000/api/v1/users/${userUuid}/expenses`
+    const url: string = `${URI}/api/v1/users/${userUuid}/expenses`
 
     try {
         const response = await fetch(url, {
