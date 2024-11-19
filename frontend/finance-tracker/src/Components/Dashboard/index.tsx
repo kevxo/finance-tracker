@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button } from "flowbite-react";
 import { useEffect, useState } from 'react';
 
 
@@ -22,6 +22,7 @@ export function Dashboard() {
     return (
         <div className="overflow-x-auto">
             <h1 className="text-xl">Expenses</h1>
+            <Button className="" size="sm">Create Expense</Button>
             <Table>
                 <TableHead>
                 <TableHeadCell>Category</TableHeadCell>
