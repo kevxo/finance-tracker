@@ -4,3 +4,9 @@ export interface Expense {
     category: string;
     date: Date
 }
+
+export interface NewExpense {
+    amount: number;
+    category: string;
+    date: string;
+}
