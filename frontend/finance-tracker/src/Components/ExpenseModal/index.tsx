@@ -4,12 +4,12 @@ import { Button, Label, Modal, TextInput, Datepicker } from "flowbite-react";
 import { useState } from "react";
 
 import { createUserExpense } from "../../Services/APIs/Expenses";
-import { NewExpense } from "../../Types";
+import { Expense } from "../../Types";
 
 interface ExpenseModalProps {
   isOpen: boolean;
   handleOnClose: () => void;
-  onAddExpense: (expense: NewExpense) => void;
+  onAddExpense: (expense: Expense) => void;
 }
 
 export function ExpenseModal({isOpen, handleOnClose, onAddExpense}: ExpenseModalProps) {
@@ -22,8 +22,8 @@ export function ExpenseModal({isOpen, handleOnClose, onAddExpense}: ExpenseModal
     e.preventDefault()
 
     if (token && amount && date && category) {
-      const newExpense =  { category: category, amount: amount, date: date.toISOString().split('T')[0]}
-      await createUserExpense(token, newExpense)
+      const newExpensePayload =  { category: category, amount: amount, date: date.toISOString().split('T')[0]}
+      const newExpense = await createUserExpense(token, newExpensePayload)
 
       onAddExpense(newExpense)
       handleOnClose()

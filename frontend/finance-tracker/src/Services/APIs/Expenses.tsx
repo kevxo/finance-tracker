@@ -53,6 +53,10 @@ export const createUserExpense = async (token: string, payload: ExpenseCreateBod
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
+
+        const data = await response.json();
+
+        return data;
     } catch (err) {
         console.error(err);
     }

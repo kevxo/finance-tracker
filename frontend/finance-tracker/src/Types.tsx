@@ -5,7 +5,7 @@ export interface Expense {
     date: Date
 }
 
-export interface NewExpense {
+export interface NewExpensePayload {
     amount: number;
     category: string;
     date: string;

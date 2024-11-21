@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 
 
 import { getUserExpenses } from "../../Services/APIs/Expenses";
-import { Expense, NewExpense } from '../../Types'
+import { Expense } from '../../Types'
 import { ExpenseModal } from "../ExpenseModal";
 
 export function Dashboard() {
-    const [expenses, setExpenses] = useState<(Expense | NewExpense)[]>([])
+    const [expenses, setExpenses] = useState<(Expense)[]>([])
     const [openModal, setOpenModal] = useState<boolean>(false)
     const token = localStorage.getItem('token')
     useEffect(() => {
@@ -21,7 +21,7 @@ export function Dashboard() {
         userExpenses()
     }, [token])
 
-    const handleAddExpense = (newExpense: NewExpense) => {
+    const handleAddExpense = (newExpense: Expense) => {
         setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
     }
 
