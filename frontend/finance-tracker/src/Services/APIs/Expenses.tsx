@@ -2,10 +2,10 @@ import { jwtDecode } from "jwt-decode";
 
 const URI: string = import.meta.env.VITE_API_URL
 
-interface ExpenseCreatBody {
+interface ExpenseCreateBody {
     amount: number;
     category: string;
-    date: Date;
+    date: string;
 }
 
 export const getUserExpenses = async (token: string) => {
@@ -34,7 +34,7 @@ export const getUserExpenses = async (token: string) => {
     }
 }
 
-export const createUserExpense = async (token: string, payload: ExpenseCreatBody) => {
+export const createUserExpense = async (token: string, payload: ExpenseCreateBody) => {
     const decode = jwtDecode(token);
     const userUuid = decode?.uuid;
 
