@@ -1,12 +1,14 @@
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button } from "flowbite-react";
 import { useEffect, useState } from 'react';
 
 
 import { getUserExpenses } from "../../Services/APIs/Expenses";
 import { Expense } from '../../Types'
+import { ExpenseModal } from "../ExpenseModal";
 
 export function Dashboard() {
-    const [expenses, setExpenses] = useState<[Expense] | []>([])
+    const [expenses, setExpenses] = useState<(Expense)[]>([])
+    const [openModal, setOpenModal] = useState<boolean>(false)
     const token = localStorage.getItem('token')
     useEffect(() => {
         const userExpenses = async () => {
@@ -19,10 +21,20 @@ export function Dashboard() {
         userExpenses()
     }, [token])
 
+    const handleAddExpense = (newExpense: Expense) => {
+        setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+    }
+
     return (
         <div className="overflow-x-auto">
-            <h1 className="text-xl">Expenses</h1>
-            <Table>
+            <div className="flex items-center justify-between mt-6">
+                <h1 className="text-xl">
+                    Expenses
+                </h1>
+                <Button className="mr-4" onClick={() => setOpenModal(true)} size="xs">Create Expense</Button>
+            </div>
+            <ExpenseModal isOpen={openModal} handleOnClose={() => setOpenModal(false)} onAddExpense={handleAddExpense}/>
+            <Table className="">
                 <TableHead>
                 <TableHeadCell>Category</TableHeadCell>
                 <TableHeadCell>Amount</TableHeadCell>

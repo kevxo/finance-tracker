@@ -1,4 +1,4 @@
-const URI: string = import.meta.env.VITE_API_URL
+import { URI } from '../../env'
 const URL: string = `${URI}/api/v1/login`
 
 interface UserLogin {
