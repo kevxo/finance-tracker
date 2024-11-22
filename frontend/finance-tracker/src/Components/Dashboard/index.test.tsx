@@ -5,6 +5,9 @@ import { Dashboard } from './index'
 import { getUserExpenses } from '../../Services/APIs/Expenses'
 
 jest.mock('../../Services/APIs/Expenses')
+jest.mock('../../env', () => ({
+    URI: 'http://mock-api.test',
+}));
 
 describe('Dashboard', () => {
     beforeEach(() => {
@@ -12,7 +15,7 @@ describe('Dashboard', () => {
 
         const localStorageMock = (() => {
             let store: { [key: string]: string } = {
-                token: 'mockAccessToken',
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiVXNlck1vY2tVVUlEIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjg2MDAyNzAwfQ._V9T0XpD0QOV_pFymENcHZDtkDriE6jxmrW8fJaxCPE',
             };
 
             return {

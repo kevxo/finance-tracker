@@ -6,6 +6,9 @@ import { loginUser } from '../../Services/APIs/Login';
 import { Dashboard } from '../Dashboard/index';
 
 jest.mock( '../../Services/APIs/Login')
+jest.mock('../../env', () => ({
+    URI: 'http://mock-api.test',
+}));
 
 describe('Login', () => {
     beforeEach(() => {
@@ -13,7 +16,7 @@ describe('Login', () => {
 
         const localStorageMock = (() => {
             let store: { [key: string]: string } = {
-                token: 'mockAccessToken',
+                token:  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiVXNlck1vY2tVVUlEIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjg2MDAyNzAwfQ._V9T0XpD0QOV_pFymENcHZDtkDriE6jxmrW8fJaxCPE',
             };
 
             return {
@@ -85,7 +88,7 @@ describe('Login', () => {
         fireEvent.click(loginButton)
 
         await waitFor(() => {
-            expect(screen.getByText('Dashboard')).toBeDefined();
+            expect(screen.getByText('Expenses')).toBeDefined();
         })
 
         expect(loginUser).toHaveBeenCalledWith({

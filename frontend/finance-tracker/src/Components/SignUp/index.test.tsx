@@ -6,6 +6,9 @@ import { createAccount } from '../../Services/APIs/CreateAccount';
 import { Login } from '../Login/index';
 
 jest.mock('../../Services/APIs/CreateAccount')
+jest.mock('../../env', () => ({
+    URI: 'http://mock-api.test',
+}));
 
 describe('Register User', () => {
     it('should render', async () => {
