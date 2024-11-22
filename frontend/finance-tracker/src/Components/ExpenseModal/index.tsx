@@ -47,7 +47,7 @@ export function ExpenseModal({isOpen, handleOnClose, onAddExpense}: ExpenseModal
               <div className="mb-2 block">
                 <LabelWithAsterisk htmlFor="amount" label="Amount" />
               </div>
-              <TextInput id="amount" type="number" placeholder="2000.00" onChange={(e) => setAmount(Number(e.target.value))} required />
+              <TextInput id="amount" type="number" placeholder="2000.00" min="1" onChange={(e) => setAmount(Number(e.target.value))} required />
             </div>
             <div>
               <div className="mb-2 block">
@@ -56,7 +56,7 @@ export function ExpenseModal({isOpen, handleOnClose, onAddExpense}: ExpenseModal
                 <Datepicker required onChange={(e) => setDate(e || new Date())}/>
             </div>
             <div className="w-full">
-              <Button onClick={(e: any) => handleOnSubmit(e)} disabled={!category || !amount}>Submit</Button>
+              <Button onClick={(e: any) => handleOnSubmit(e)} disabled={!category || !amount || amount < 1}>Submit</Button>
             </div>
           </div>
         </Modal.Body>
