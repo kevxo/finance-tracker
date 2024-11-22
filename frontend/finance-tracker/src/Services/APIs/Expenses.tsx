@@ -9,7 +9,6 @@ interface ExpenseCreateBody {
 }
 
 export const getUserExpenses = async (token: string) => {
-    console.log(token)
     const decode = jwtDecode(token);
     const userUuid = decode?.uuid;
 
