@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button
 import { useEffect, useState } from 'react';
 
 
-import { getUserExpenses } from "../../Services/APIs/Expenses";
+import { deleteUserExpense, getUserExpenses } from "../../Services/APIs/Expenses";
 import { Expense } from '../../Types'
 import { ExpenseModal } from "../ExpenseModal";
 
@@ -46,6 +46,16 @@ export function Dashboard() {
         }
     }
 
+    const handleDeleteExpense = async () => {
+        if (selectedExpenses.length > 0 && token) {
+            await deleteUserExpense(token, selectedExpenses)
+
+            setExpenses((prevExpenses) => prevExpenses.filter((expense) => !selectedExpenses.includes(expense.uuid)))
+            setSelectedExpenses([])
+            setAllCheckBoxes(!checkedAllRecords)
+        }
+    }
+
     return (
         <div className="overflow-x-auto">
             <div className="flex items-center justify-between mt-6">
@@ -54,7 +64,7 @@ export function Dashboard() {
                 </h1>
                 <div className="flex space-x-2 mr-12">
                     <Button onClick={() => setOpenModal(true)} size="xs">Create Expense</Button>
-                    <Button onClick={() => {}} size="xs">Delete Expense</Button>
+                    <Button onClick={() => handleDeleteExpense()} size="xs">Delete Expense(s)</Button>
                 </div>
             </div>
             <ExpenseModal isOpen={openModal} handleOnClose={() => setOpenModal(false)} onAddExpense={handleAddExpense}/>
