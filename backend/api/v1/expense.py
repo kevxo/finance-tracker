@@ -2,7 +2,12 @@ from fastapi import APIRouter, status, HTTPException, Depends
 from sqlalchemy.orm import Session
 from typing import List
 
-from db.schemas.expense import UserExpenseCreate, ShowUserExpense, UpdateUserExpense
+from db.schemas.expense import (
+    UserExpenseCreate,
+    ShowUserExpense,
+    UpdateUserExpense,
+    DeleteExpenses,
+)
 from db.db_session import get_db
 from db.models.user import User
 from db.model_helpers.expense import (
@@ -96,20 +101,21 @@ def patch_expense(
     return updated_expense
 
 
-@router.delete("/api/v1/users/{user_uuid}/expenses/{expense_uuid}")
+@router.delete("/api/v1/users/{user_uuid}/expenses")
 def delete_expense(
     user_uuid: str,
-    expense_uuid: str,
+    body: DeleteExpenses,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     verify_current_user(user_uuid, current_user.uuid)
 
-    message = delete_user_expense(db, expense_uuid)
-
-    if message.get("error"):
+    if len(body.uuids) == 0:
         raise HTTPException(
-            detail=message.get("error"), status_code=status.HTTP_400_BAD_REQUEST
+            detail="Pass UUID(s), none were given.",
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
 
-    return {"message": f"Expense with uuid {expense_uuid} was deleted successfully."}
+    message = delete_user_expense(db, body.uuids)
+
+    return {"message": message.get("msg")}
