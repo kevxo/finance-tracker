@@ -4,11 +4,14 @@ import { useEffect, useState } from 'react';
 
 import { deleteUserExpense, getUserExpenses } from "../../Services/APIs/Expenses";
 import { Expense } from '../../Types'
+import { EditExpenseModal } from "../EditExpenseModal";
 import { ExpenseModal } from "../ExpenseModal";
 
 export function Dashboard() {
     const [expenses, setExpenses] = useState<(Expense)[]>([]);
     const [openModal, setOpenModal] = useState<boolean>(false);
+    const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+
     const [checkedAllRecords, setAllCheckBoxes] = useState<boolean>(false);
     const [selectedExpenses, setSelectedExpenses] = useState<(Expense["uuid"])[]>([]);
     const token = localStorage.getItem('token');
@@ -26,6 +29,17 @@ export function Dashboard() {
 
     const handleAddExpense = (newExpense: Expense) => {
         setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+    }
+
+    const handleUpdateExpense = (updatedExpense: Expense) => {
+        setExpenses((prevExpenses) => {
+            const updatedExpenses = prevExpenses.map((oldExpense) =>
+                oldExpense.uuid === updatedExpense.uuid ? updatedExpense : oldExpense
+            )
+
+
+            return updatedExpenses
+        })
     }
 
     const handleAllExpenses = () => {
@@ -52,7 +66,10 @@ export function Dashboard() {
 
             setExpenses((prevExpenses) => prevExpenses.filter((expense) => !selectedExpenses.includes(expense.uuid)))
             setSelectedExpenses([])
-            setAllCheckBoxes(!checkedAllRecords)
+
+            if (checkedAllRecords) {
+                setAllCheckBoxes(!checkedAllRecords)
+            }
         }
     }
 
@@ -91,10 +108,11 @@ export function Dashboard() {
                             })}</TableCell>
                             <TableCell>{expense.date.toString()}</TableCell>
                             <Table.Cell>
-                                <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+                                <a onClick={() => setOpenEditModal(true)} className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
                                     Edit
                                 </a>
                             </Table.Cell>
+                            <EditExpenseModal isOpen={openEditModal} handleOnClose={() => setOpenEditModal(false)} onUpdateExpense={handleUpdateExpense} expense={expense}/>
                         </TableRow>
                     ))}
                 </TableBody>
