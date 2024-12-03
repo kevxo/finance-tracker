@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within} from '@testing-library/reac
 import '@testing-library/jest-dom';
 
 import { Dashboard } from './index'
-import { getUserExpenses, createUserExpense } from '../../Services/APIs/Expenses'
+import { getUserExpenses, createUserExpense, deleteUserExpense, updateUserExpense } from '../../Services/APIs/Expenses'
 
 jest.mock('../../Services/APIs/Expenses')
 jest.mock('../../env', () => ({
@@ -35,6 +35,8 @@ describe('Dashboard', () => {
         Object.defineProperty(window, 'localStorage', {
             value: localStorageMock,
         });
+
+        jest.clearAllMocks();
     })
 
 
@@ -165,5 +167,87 @@ describe('Dashboard', () => {
 
        expect(screen.getByText("Internet")).toBeVisible()
        expect(screen.getByText("$120.00")).toBeVisible()
+    })
+
+    it('should be able to delete expense', async () => {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce([
+            {
+                amount: 200,
+                category: 'Groceries',
+                date: '2024-10-10',
+                uuid: 'TESTUUID',
+            },
+        ]);
+
+        (deleteUserExpense as jest.Mock).mockResolvedValueOnce({
+            data: 'Deleted successfully',
+        });
+
+        render(<Dashboard />);
+
+        await waitFor(() => {
+            expect(screen.getByText('Groceries')).toBeVisible();
+        });
+
+        const checkbox = screen.getAllByRole('checkbox')[0];
+        fireEvent.click(checkbox);
+
+        const deleteButton = screen.getByRole('button', { name: /delete expense\(s\)/i });
+        fireEvent.click(deleteButton);
+
+        await waitFor(() => {
+            expect(deleteUserExpense).toHaveBeenCalledWith("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiVXNlck1vY2tVVUlEIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjg2MDAyNzAwfQ._V9T0XpD0QOV_pFymENcHZDtkDriE6jxmrW8fJaxCPE", ["TESTUUID"]);
+            expect(screen.queryByText('Groceries')).not.toBeInTheDocument();
+        });
+    });
+
+    it("should be able to Edit expense", async () => {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce([
+            {
+                amount: 200,
+                category: 'Groceries',
+                date: '2024-10-10',
+                uuid: 'TESTUUID',
+            },
+        ]);
+
+        (updateUserExpense as jest.Mock).mockResolvedValueOnce(
+            {
+                amount: 100,
+                category: 'Groceries',
+                date: '2024-10-10',
+                uuid: 'TESTUUID',
+            },
+        )
+
+        render(<Dashboard />);
+
+        await waitFor(() => {
+            expect(screen.getByText('Groceries')).toBeVisible();
+        });
+
+
+        const editLink = screen.getByText("Edit")
+        fireEvent.click(editLink);
+
+        await waitFor(() => {
+            expect(screen.getByRole('dialog')).toBeVisible();
+            expect(screen.getByText(/edit expense/i)).toBeVisible();
+        });
+
+        const amountInput = screen.getByRole('spinbutton', { name: /amount/i });
+        const updateButton = screen.getByRole('button', { name: /update/i });
+
+
+        fireEvent.change(amountInput, { target: { value: '100' } });
+
+        expect(amountInput).toHaveValue(100);
+
+        fireEvent.click(updateButton);
+
+        await waitFor(() => {
+            expect(screen.getByText('$100.00')).toBeInTheDocument();
+            expect(screen.queryByText('$200.00')).not.toBeInTheDocument();
+        });
     })
 })
