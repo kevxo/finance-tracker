@@ -1,6 +1,6 @@
 import datetime
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import date
 
 
@@ -25,3 +25,7 @@ class UpdateUserExpense(BaseModel):
     amount: Optional[float] = None
     category: Optional[str] = None
     date: Optional[datetime.date] = None
+
+
+class DeleteExpenses(BaseModel):
+    uuids: List[str]

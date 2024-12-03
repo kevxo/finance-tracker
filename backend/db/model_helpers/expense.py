@@ -1,6 +1,9 @@
 import uuid
 
+from typing import List
+
 from sqlalchemy.orm import Session
+from sqlalchemy import delete
 from db.schemas.expense import UserExpenseCreate, UpdateUserExpense
 from db.models.user import User
 from db.models.expense import Expense
@@ -49,13 +52,11 @@ def update_expense(
     return updated_expense
 
 
-def delete_user_expense(db: Session, expense_uuid: str):
-    expense = db.query(Expense).filter(Expense.uuid == expense_uuid)
+def delete_user_expense(db: Session, expense_uuids: List[str]):
+    stmt = delete(Expense).where(Expense.uuid.in_(expense_uuids))
 
-    if not expense:
-        return {"error": f"Could not find user with uuid {expense_uuid}"}
+    db.execute(stmt)
 
-    expense.delete()
     db.commit()
 
-    return {"msg": f"User with uuid {expense_uuid} deleted successfully"}
+    return {"msg": "Expense(s) deleted successfully"}

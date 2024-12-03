@@ -124,14 +124,14 @@ def test_delete_expense(client, db_session):
 
         with patch("jose.jwt.decode") as mock_decode:
             mock_decode.return_value = {"sub": "kevxo"}
+            delete_body = {"uuids": [expense.uuid]}
 
-            response = client.delete(
-                f"/api/v1/users/{expense.user_uuid}/expenses/{expense.uuid}",
+            response = client.request(
+                "DELETE",
+                f"/api/v1/users/{expense.user_uuid}/expenses",
                 headers={"Authorization": f"Bearer {token}"},
+                json=delete_body,
             )
 
             assert response.status_code == 200
-            assert (
-                response.json()["message"]
-                == f"Expense with uuid {expense.uuid} was deleted successfully."
-            )
+            assert response.json()["message"] == "Expense(s) deleted successfully"
