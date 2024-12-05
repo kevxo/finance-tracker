@@ -57,7 +57,7 @@ export function SignUp() {
                     <div className="mb-2 block">
                         <LabelWithAsterisk htmlFor="repeat-password" label="Repeat password" />
                     </div>
-                    <TextInput id="repeat-password" type="repeat-password" required shadow onChange={(e) => setRepeatedPassword(e.target.value)}/>
+                    <TextInput id="repeat-password" type="password" required shadow onChange={(e) => setRepeatedPassword(e.target.value)}/>
                 </div>
                 <Button type="submit" onClick={(e: any) => handleAccountCreate(e)} >Register new account</Button>
             </form>
