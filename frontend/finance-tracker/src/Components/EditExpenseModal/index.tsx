@@ -14,9 +14,10 @@ interface EditExpenseModalProps {
 }
 
 export function EditExpenseModal({isOpen, handleOnClose, onUpdateExpense, expense}: EditExpenseModalProps) {
-  const [category, setCategory] = useState<string>()
-  const [amount, setAmount] = useState<number>()
-  const [date, setDate] = useState<Date>(new Date())
+  const [category, setCategory] = useState<string>();
+  const [amount, setAmount] = useState<number>();
+  const [date, setDate] = useState<Date>();
+
   const token = localStorage.getItem('token')
 
   const handleOnUpdate = async (e: any) => {
@@ -25,12 +26,12 @@ export function EditExpenseModal({isOpen, handleOnClose, onUpdateExpense, expens
     let updateExpensePayload: ExpenseUpdateBody = {}
 
     if (token) {
-        if ( category && category != expense.category) {
-            updateExpensePayload.category = category
+        if (category && category != expense.category) {
+          updateExpensePayload.category = category
         } else if (amount && amount != expense.amount) {
-            updateExpensePayload.amount = amount
-        } else if (date != expense.date) {
-            updateExpensePayload.date = date.toISOString().split('T')[0]
+          updateExpensePayload.amount = amount
+        } else if (date && date != expense.date) {
+          updateExpensePayload.date = date.toISOString().split('T')[0]
         }
 
 
@@ -52,22 +53,22 @@ export function EditExpenseModal({isOpen, handleOnClose, onUpdateExpense, expens
               <div className="mb-2 block">
                 <Label htmlFor="category" value="Category" />
               </div>
-              <TextInput id="category" placeholder={expense.category} onChange={(e) => setCategory(e.target.value)}/>
+              <TextInput id="category" onChange={(e) => setCategory(e.target.value)}/>
             </div>
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="amount" value="Amount" />
               </div>
-              <TextInput id="amount" type="number" placeholder={expense.amount.toString()} min="1" onChange={(e) => setAmount(Number(e.target.value))}/>
+              <TextInput id="amount" type="number" min="1" onChange={(e) => setAmount(Number(e.target.value))}/>
             </div>
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="date" value="Date" />
               </div>
-                <Datepicker placeholder={new Date(`${expense.date}T00:00:00`).toString()} onChange={(e) => setDate(e || new Date())}/>
+                <Datepicker onChange={(e) => setDate(e || new Date())}/>
             </div>
             <div className="w-full">
-              <Button onClick={(e: any) => handleOnUpdate(e)} disabled={!category && !amount}>Update</Button>
+              <Button onClick={(e: any) => handleOnUpdate(e)} disabled={!category && !amount && !date}>Update</Button>
             </div>
           </div>
         </Modal.Body>
