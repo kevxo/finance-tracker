@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_pagination import add_pagination
 from db.db_session import engine
 from db.base import Base
 from db.config import settings
@@ -18,6 +19,7 @@ def start_services():
     app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
     create_tables()
     include_router(app)
+    add_pagination(app)
 
     return app
 
