@@ -117,6 +117,12 @@ export function Dashboard() {
                     ))}
                 </TableBody>
             </Table>
+
+            <div className="flex items-center justify-between mt-6">
+                <h1 className="text-xl">
+                    Budgets
+                </h1>
+            </div>
         </div>
     )
 }
