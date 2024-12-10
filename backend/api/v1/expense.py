@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi_pagination import Page
 from sqlalchemy.orm import Session
-from typing import List
 
 from db.schemas.expense import (
     UserExpenseCreate,
@@ -44,7 +44,7 @@ def create_expense(
     return user_expense
 
 
-@router.get("/api/v1/users/{user_uuid}/expenses", response_model=List[ShowUserExpense])
+@router.get("/api/v1/users/{user_uuid}/expenses", response_model=Page[ShowUserExpense])
 def get_all_expenses(
     user_uuid: str,
     db: Session = Depends(get_db),

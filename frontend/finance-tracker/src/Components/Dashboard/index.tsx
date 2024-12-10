@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button, Checkbox } from "flowbite-react";
+import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button, Checkbox, Pagination } from "flowbite-react";
 import { useEffect, useState } from 'react';
 
 
@@ -11,6 +11,8 @@ export function Dashboard() {
     const [expenses, setExpenses] = useState<(Expense)[]>([]);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+    const [totalPages, setTotalPages] = useState();
+    const [currentPage, setCurrentPage] = useState(1);
 
     const [checkedAllRecords, setAllCheckBoxes] = useState<boolean>(false);
     const [selectedExpenses, setSelectedExpenses] = useState<(Expense["uuid"])[]>([]);
@@ -19,16 +21,23 @@ export function Dashboard() {
     useEffect(() => {
         const userExpenses = async () => {
             if (token) {
-                const expensesData = await getUserExpenses(token)
-                setExpenses(expensesData)
+                const expensesData = await getUserExpenses(token, currentPage)
+                setTotalPages(expensesData.pages)
+                setExpenses(expensesData.items)
             }
         }
 
         userExpenses()
-    }, [token])
+    }, [currentPage, token])
 
     const handleAddExpense = (newExpense: Expense) => {
-        setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+        setExpenses((prevExpenses) => {
+            if (prevExpenses.length >= 5) {
+                return prevExpenses;
+            }
+
+            return [...prevExpenses, newExpense]
+        });
     }
 
     const handleUpdateExpense = (updatedExpense: Expense) => {
@@ -116,7 +125,17 @@ export function Dashboard() {
                         </TableRow>
                     ))}
                 </TableBody>
+
+
             </Table>
+            <div className="flex justify-end mr-12">
+                <Pagination currentPage={currentPage}  totalPages={totalPages ? totalPages : 0} onPageChange={(page: number) => setCurrentPage(page)} />
+            </div>
+            <div className="flex items-center justify-between mt-6">
+                <h1 className="text-xl">
+                    Budgets
+                </h1>
+            </div>
         </div>
     )
 }

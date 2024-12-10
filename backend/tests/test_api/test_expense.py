@@ -52,11 +52,12 @@ def test_get_expenses(client, db_session):
             response = client.get(
                 f"/api/v1/users/{expense.user_uuid}/expenses",
                 headers={"Authorization": f"Bearer {token}"},
+                params={"page": 1, "size": 5},
             )
 
             assert response.status_code == 200
-            assert response.json()[0]["uuid"] == expense.uuid
-            assert response.json()[0]["user_uuid"] == expense.user_uuid
+            assert response.json()["items"][0]["uuid"] == expense.uuid
+            assert response.json()["items"][0]["user_uuid"] == expense.user_uuid
 
 
 def test_get_expense(client, db_session):
