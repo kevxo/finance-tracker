@@ -7,6 +7,7 @@ from sqlalchemy import delete
 from db.schemas.expense import UserExpenseCreate, UpdateUserExpense
 from db.models.user import User
 from db.models.expense import Expense
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 
 def create_new_user_expense(
@@ -24,7 +25,7 @@ def create_new_user_expense(
 
 
 def list_expenses(db: Session, user_uuid: str):
-    expenses = db.query(Expense).filter(Expense.user_uuid == user_uuid).all()
+    expenses = paginate(db.query(Expense).filter(Expense.user_uuid == user_uuid))
 
     return expenses
 

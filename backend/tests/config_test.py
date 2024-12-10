@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from fastapi_pagination import add_pagination
 
 import sys
 import os
@@ -20,6 +21,7 @@ from api.routes import api_router
 def start_application():
     app = FastAPI()
     app.include_router(api_router)
+    add_pagination(app)
 
     return app
 

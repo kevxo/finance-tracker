@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, HTTPException, Depends
-from fastapi_pagination import Page, paginate
+from fastapi_pagination import Page
 from sqlalchemy.orm import Session
 
 from db.schemas.expense import (
@@ -52,7 +52,7 @@ def get_all_expenses(
 ):
     verify_current_user(user_uuid, current_user.uuid)
 
-    expenses = paginate(list_expenses(db, user_uuid))
+    expenses = list_expenses(db, user_uuid)
 
     return expenses
 
