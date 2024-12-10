@@ -19,18 +19,18 @@ export interface ExpenseUpdateBody {
     date?: string;
 }
 
-export const getUserExpenses = async (token: string) => {
+export const getUserExpenses = async (token: string, page=1, size=5) => {
     const decode = jwtDecode(token);
     const userUuid = decode?.uuid;
 
-    const url: string = `${URI}/api/v1/users/${userUuid}/expenses`
+    const url: string = `${URI}/api/v1/users/${userUuid}/expenses?page=${page}&size=${size}`
 
     try {
         const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
-            }
+            },
         })
 
         if (!response.ok) {
