@@ -97,7 +97,7 @@ export function Dashboard() {
             <Table hoverable>
                 <TableHead>
                 <Table.HeadCell className="p-4">
-                    <Checkbox checked={checkedAllRecords} onChange={() => handleAllExpenses()}/>
+                    <Checkbox checked={expenses.length === selectedExpenses.length} onChange={() => handleAllExpenses()}/>
                 </Table.HeadCell>
                 <TableHeadCell>Category</TableHeadCell>
                 <TableHeadCell>Amount</TableHeadCell>
@@ -130,11 +130,6 @@ export function Dashboard() {
             </Table>
             <div className="flex justify-end mr-12">
                 <Pagination currentPage={currentPage}  totalPages={totalPages ? totalPages : 0} onPageChange={(page: number) => setCurrentPage(page)} />
-            </div>
-            <div className="flex items-center justify-between mt-6">
-                <h1 className="text-xl">
-                    Budgets
-                </h1>
             </div>
         </div>
     )
