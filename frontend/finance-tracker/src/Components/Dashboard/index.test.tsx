@@ -4,7 +4,12 @@ import '@testing-library/jest-dom';
 import { Dashboard } from './index'
 import { getUserExpenses, createUserExpense, deleteUserExpense, updateUserExpense } from '../../Services/APIs/Expenses'
 
-jest.mock('../../Services/APIs/Expenses')
+jest.mock('../../Services/APIs/Expenses', () => ({
+    getUserExpenses: jest.fn(),
+    deleteUserExpense: jest.fn(),
+    createUserExpense: jest.fn(),
+    updateUserExpense: jest.fn(),
+}))
 jest.mock('../../env', () => ({
     URI: 'http://mock-api.test',
 }));
@@ -41,6 +46,12 @@ describe('Dashboard', () => {
 
 
     it('should render', async () => {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce([{
+            amount: 200,
+            category: 'Groceries',
+            date: '2024-10-10',
+            uuid: 'TESTUUID'
+        }])
         render(<Dashboard />)
 
         await waitFor(() => {
@@ -51,12 +62,15 @@ describe('Dashboard', () => {
     })
 
     it('should list all expenses', async () => {
-        (getUserExpenses as jest.Mock).mockResolvedValueOnce([{
-            amount: 200,
-            category: 'Groceries',
-            date: '2024-10-10',
-            uuid: 'TESTUUID'
-        }])
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [{
+                amount: 200,
+                category: 'Groceries',
+                date: '2024-10-10',
+                uuid: 'TESTUUID'
+            }],
+            pages: 1
+        })
         render(<Dashboard />)
 
         await waitFor(() => {
@@ -71,6 +85,10 @@ describe('Dashboard', () => {
     })
 
     it('should click create expense', async () => {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [],
+            pages: 1
+        })
         render(<Dashboard />)
 
         await waitFor(async () => {
@@ -99,6 +117,10 @@ describe('Dashboard', () => {
     })
 
     it('should be able to close modal', async () => {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [],
+            pages: 1
+        })
         render(<Dashboard />)
 
         await waitFor(async () => {
@@ -123,7 +145,10 @@ describe('Dashboard', () => {
     })
 
     it('should be able to create expense', async () => {
-        (getUserExpenses as jest.Mock).mockResolvedValueOnce([]);
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce((getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [],
+            pages: 1
+        }));
 
         (createUserExpense as jest.Mock).mockResolvedValueOnce({
             amount: 120,
@@ -170,14 +195,17 @@ describe('Dashboard', () => {
     })
 
     it('should be able to delete expense', async () => {
-        (getUserExpenses as jest.Mock).mockResolvedValueOnce([
-            {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [
+              {
                 amount: 200,
                 category: 'Groceries',
                 date: '2024-10-10',
                 uuid: 'TESTUUID',
-            },
-        ]);
+              },
+            ],
+            pages: 1,
+          });
 
         (deleteUserExpense as jest.Mock).mockResolvedValueOnce({
             data: 'Deleted successfully',
@@ -202,23 +230,25 @@ describe('Dashboard', () => {
     });
 
     it("should be able to Edit expense", async () => {
-        (getUserExpenses as jest.Mock).mockResolvedValueOnce([
-            {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [
+              {
                 amount: 200,
                 category: 'Groceries',
                 date: '2024-10-10',
                 uuid: 'TESTUUID',
-            },
-        ]);
+              },
+            ],
+            pages: 1,
+        });
 
-        (updateUserExpense as jest.Mock).mockResolvedValueOnce(
-            {
-                amount: 100,
-                category: 'Groceries',
-                date: '2024-10-10',
-                uuid: 'TESTUUID',
-            },
-        )
+        (updateUserExpense as jest.Mock).mockResolvedValueOnce({
+            amount: 100,
+            category: 'Groceries',
+            date: '2024-10-10',
+            uuid: 'TESTUUID',
+        });
+
 
         render(<Dashboard />);
 
