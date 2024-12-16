@@ -2,10 +2,12 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Routes, Route} from 'react-router-dom';
 
 import { Login } from './index';
+import { getUserExpenses } from '../../Services/APIs/Expenses';
 import { loginUser } from '../../Services/APIs/Login';
 import { Dashboard } from '../Dashboard/index';
 
 jest.mock( '../../Services/APIs/Login')
+jest.mock('../../Services/APIs/Expenses')
 jest.mock('../../env', () => ({
     URI: 'http://mock-api.test',
 }));
@@ -40,6 +42,10 @@ describe('Login', () => {
 
     it('should render', () => {
         (loginUser as jest.Mock).mockResolvedValueOnce(undefined);
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [],
+            pages: 1
+        })
         render(
             <MemoryRouter initialEntries={['/']}>
                <Routes>
@@ -61,6 +67,15 @@ describe('Login', () => {
 
     it("should login", async () => {
         (loginUser as jest.Mock).mockResolvedValueOnce({ access_token: 'mockAccessToken' });
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [{
+                amount: 200,
+                category: 'Groceries',
+                date: '2024-10-10',
+                uuid: 'TESTUUID'
+            }],
+            pages: 1
+        })
 
         render(
             <MemoryRouter initialEntries={['/']}>
@@ -88,7 +103,7 @@ describe('Login', () => {
         fireEvent.click(loginButton)
 
         await waitFor(() => {
-            expect(screen.getByText('Expenses')).toBeDefined();
+            expect(screen.getAllByText('Expenses')).toBeDefined();
         })
 
         expect(loginUser).toHaveBeenCalledWith({
