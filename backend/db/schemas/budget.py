@@ -12,8 +12,6 @@ class ShowBudget(BaseModel):
     budget_amount: float
     month: date
     user_uuid: UUID4
-    expenses_total: float
-    remmaining_amount: float
 
     class Config:
         orm_mode = True
