@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 from db.schemas.budget import ShowBudget, CreateBudget
 from db.db_session import get_db
 from db.models.user import User
-from db.model_helpers.budget import create_new_budget, retrieve_budget, get_expenses_for_budget
+from db.model_helpers.budget import (
+    create_new_budget,
+    retrieve_budget,
+    get_expenses_total_for_budget,
+)
 from api.v1.login import get_current_user
 from helpers.authentication import verify_current_user
 
@@ -31,7 +35,6 @@ def create_budget(
 
 @router.get(
     "/api/v1/users/{user_uuid}/budgets/{budget_uuid}",
-    response_model=ShowBudget,
     status_code=status.HTTP_200_OK,
 )
 def get_budget(
@@ -43,7 +46,10 @@ def get_budget(
     verify_current_user(user_uuid, current_user.uuid)
 
     budget = retrieve_budget(budget_uuid, user_uuid, db)
-    expenses_for_budget = get_expenses_for_budget(user_uuid, db, budget.month)
+    expenses_total_for_budget = get_expenses_total_for_budget(
+        user_uuid, db, budget.month
+    )
+    remaining_budget = round(budget.budget_amount - expenses_total_for_budget, 2)
 
     if not budget:
         raise HTTPException(
@@ -51,4 +57,10 @@ def get_budget(
             detail=f"Budget with uuid {budget_uuid} not found.",
         )
 
-    return budget
+    return {
+        "month": budget.month,
+        "amount": budget.budget_amount,
+        "expenses_total": expenses_total_for_budget,
+        "remaining_budget": remaining_budget,
+        "uuid": budget.uuid,
+    }
