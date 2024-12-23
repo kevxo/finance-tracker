@@ -1,5 +1,9 @@
 from tests.config_test import client, app, db_session
-from tests.test_helper import create_random_user, create_random_budget
+from tests.test_helper import (
+    create_random_user,
+    create_random_budget,
+    create_random_expense,
+)
 from unittest.mock import patch
 
 
@@ -53,7 +57,8 @@ def test_get_budget(client, db_session):
             )
 
             assert response.status_code == 200
-            assert response.json()["budget_amount"] == 1500.00
-            assert response.json()["month"] == "2024-10-13"
+            assert response.json()["amount"] == 1500.00
+            assert response.json()["month"] == "2024-10-01"
             assert response.json()["uuid"] == budget.uuid
-            assert response.json()["user_uuid"] == budget.user_uuid
+            assert response.json()["expenses_total"]
+            assert response.json()["remaining_budget"]
