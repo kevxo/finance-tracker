@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from sqlalchemy.orm import Session
-from db.schemas.budget import ShowBudget, CreateBudget
+from db.schemas.budget import ShowBudget, CreateBudget, ShowBudgetHistory
 from db.db_session import get_db
 from db.models.user import User
 from db.model_helpers.budget import (
@@ -36,6 +36,7 @@ def create_budget(
 @router.get(
     "/api/v1/users/{user_uuid}/budgets/{budget_uuid}",
     status_code=status.HTTP_200_OK,
+    response_model=ShowBudgetHistory,
 )
 def get_budget(
     user_uuid: str,
@@ -59,7 +60,7 @@ def get_budget(
 
     return {
         "month": budget.month,
-        "amount": budget.budget_amount,
+        "budget_amount": budget.budget_amount,
         "expenses_total": expenses_total_for_budget,
         "remaining_budget": remaining_budget,
         "uuid": budget.uuid,
