@@ -7,9 +7,12 @@ from db.model_helpers.budget import (
     create_new_budget,
     retrieve_budget,
     get_expenses_total_for_budget,
+    get_all_budget_history,
 )
 from api.v1.login import get_current_user
 from helpers.authentication import verify_current_user
+
+from typing import List
 
 
 router = APIRouter()
@@ -31,6 +34,23 @@ def create_budget(
     budget = create_new_budget(budget, db, current_user)
 
     return budget
+
+
+@router.get(
+    "/api/v1/users/{user_uuid}/budgets/history",
+    status_code=status.HTTP_200_OK,
+    response_model=List[ShowBudgetHistory],
+)
+def get_budget_history(
+    user_uuid: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    verify_current_user(user_uuid, current_user.uuid)
+
+    history = get_all_budget_history(user_uuid, db)
+
+    return history
 
 
 @router.get(
