@@ -2,7 +2,6 @@ from tests.config_test import client, app, db_session
 from tests.test_helper import (
     create_random_user,
     create_random_budget,
-    create_random_expense,
 )
 from unittest.mock import patch
 
