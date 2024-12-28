@@ -15,3 +15,14 @@ class ShowBudget(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ShowBudgetHistory(BaseModel):
+    uuid: UUID4
+    budget_amount: float
+    month: date
+    expenses_total: float | None = None
+    remaining_budget: float | None = None
+
+    class Config:
+        orm_mode = True

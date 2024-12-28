@@ -16,8 +16,9 @@ def create_random_user(db: Session):
     return user
 
 
-def create_random_expense(db: Session):
-    user = create_random_user(db)
+def create_random_expense(db: Session, user=None):
+    if not user:
+        user = create_random_user(db)
 
     expense = UserExpenseCreate(
         amount=float(randrange(10, 1000)), category="Insurance", date="2024-10-09"
@@ -30,8 +31,9 @@ def create_random_expense(db: Session):
 
 def create_random_budget(db: Session):
     user = create_random_user(db)
+    create_random_expense(db, user)
 
-    budget = CreateBudget(budget_amount=1500.00, month="2024-10-13")
+    budget = CreateBudget(budget_amount=1500.00, month="2024-10-01")
 
     budget = create_new_budget(budget, db, user)
 
