@@ -1,19 +1,20 @@
 import { Modal, Label, Button, TextInput, Datepicker } from "flowbite-react"
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { createNewBudget } from "../../Services/APIs/Budgets";
-import { Budget } from '../../Types'
+import { setCurrentBudgetUuid } from "../../store/slices/budgetSlice";
 
 interface BudgetModalProps {
     isOpen: boolean;
     handleOnClose: () => void;
-    onNewBudget: (budget: Budget) => void;
 }
 
 
-export function BudgetsModal({isOpen, handleOnClose, onNewBudget}: BudgetModalProps) {
+export function BudgetsModal({isOpen, handleOnClose}: BudgetModalProps) {
     const [budgetAmount, setBudgetAmount] = useState<number>();
     const [month, setMonth] = useState<Date>(new Date());
+    const dispatch = useDispatch();
     const token = localStorage.getItem('token');
 
     const handleOnCreate = async (e: any) => {
@@ -26,7 +27,8 @@ export function BudgetsModal({isOpen, handleOnClose, onNewBudget}: BudgetModalPr
 
             const newBudget = await createNewBudget(token, newBudgetPayload);
 
-            onNewBudget(newBudget);
+            dispatch(setCurrentBudgetUuid(newBudget.uuid));
+            localStorage.setItem("currentBudgetUuid", newBudget.uuid);
             handleOnClose();
         }
     }
