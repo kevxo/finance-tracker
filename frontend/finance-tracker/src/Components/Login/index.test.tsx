@@ -1,16 +1,25 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { Provider } from 'react-redux';
 import { MemoryRouter, Routes, Route} from 'react-router-dom';
+import configureMockStore from 'redux-mock-store';
 
 import { Login } from './index';
+import { getCurrentBudget } from '../../Services/APIs/Budgets';
 import { getUserExpenses } from '../../Services/APIs/Expenses';
 import { loginUser } from '../../Services/APIs/Login';
 import { Dashboard } from '../Dashboard/index';
 
 jest.mock( '../../Services/APIs/Login')
 jest.mock('../../Services/APIs/Expenses')
+jest.mock('../../Services/APIs/Budgets')
 jest.mock('../../env', () => ({
     URI: 'http://mock-api.test',
 }));
+
+const mockStore = configureMockStore();
+const store = mockStore({
+  budget: { currentBudgetUuid: 'mock-uuid' }
+});
 
 describe('Login', () => {
     beforeEach(() => {
@@ -19,6 +28,7 @@ describe('Login', () => {
         const localStorageMock = (() => {
             let store: { [key: string]: string } = {
                 token:  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiVXNlck1vY2tVVUlEIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjg2MDAyNzAwfQ._V9T0XpD0QOV_pFymENcHZDtkDriE6jxmrW8fJaxCPE',
+                currentBudgetUuid: 'TEST-UUID'
             };
 
             return {
@@ -38,6 +48,16 @@ describe('Login', () => {
         Object.defineProperty(window, 'localStorage', {
             value: localStorageMock,
         });
+
+        (getCurrentBudget as jest.Mock).mockResolvedValue(
+            {
+                "uuid": "TEST-UUID",
+                "month": "2024-12-12",
+                "expenses_total": 0,
+                "remaining_budget": 0,
+                "budget_amount": 0
+            }
+        )
     })
 
     it('should render', () => {
@@ -47,12 +67,14 @@ describe('Login', () => {
             pages: 1
         })
         render(
-            <MemoryRouter initialEntries={['/']}>
-               <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                </Routes>
-            </MemoryRouter>
+            <Provider store={store}>
+                <MemoryRouter initialEntries={['/']}>
+                <Routes>
+                        <Route path="/" element={<Login />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Routes>
+                </MemoryRouter>
+            </Provider>
         );
 
         expect(screen.getByText("Username")).toBeDefined()
@@ -78,12 +100,14 @@ describe('Login', () => {
         })
 
         render(
-            <MemoryRouter initialEntries={['/']}>
-               <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                </Routes>
-            </MemoryRouter>
+            <Provider store={store}>
+                <MemoryRouter initialEntries={['/']}>
+                <Routes>
+                        <Route path="/" element={<Login />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Routes>
+                </MemoryRouter>
+            </Provider>
         );
 
         const usernameTextbox = screen.getByRole('textbox', {

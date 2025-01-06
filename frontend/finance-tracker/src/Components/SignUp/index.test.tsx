@@ -1,5 +1,7 @@
 import { render, screen, fireEvent, act } from '@testing-library/react'
+import { Provider } from 'react-redux';
 import { MemoryRouter, Routes, Route} from 'react-router-dom';
+import configureMockStore from 'redux-mock-store';
 
 import { SignUp } from './index';
 import { createAccount } from '../../Services/APIs/CreateAccount';
@@ -10,15 +12,21 @@ jest.mock('../../env', () => ({
     URI: 'http://mock-api.test',
 }));
 
+const mockStore = configureMockStore();
+const store = mockStore({
+  budget: { currentBudgetUuid: 'mock-uuid' }
+});
 describe('Register User', () => {
     it('should render', async () => {
         const {container} = render(
-            <MemoryRouter initialEntries={['/']}>
-               <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/signUp" element={<SignUp />} />
-                </Routes>
-            </MemoryRouter>
+            <Provider store={store}>
+                <MemoryRouter initialEntries={['/']}>
+                <Routes>
+                        <Route path="/" element={<Login />} />
+                        <Route path="/signUp" element={<SignUp />} />
+                    </Routes>
+                </MemoryRouter>
+            </Provider>
         );
 
         const registerButton = screen.getByRole('button', {

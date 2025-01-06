@@ -1,7 +1,10 @@
 import { fireEvent, render, screen, waitFor, within} from '@testing-library/react'
 import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 
 import { Dashboard } from './index'
+import { getCurrentBudget } from '../../Services/APIs/Budgets';
 import { getUserExpenses, createUserExpense, deleteUserExpense, updateUserExpense } from '../../Services/APIs/Expenses'
 
 jest.mock('../../Services/APIs/Expenses', () => ({
@@ -10,9 +13,15 @@ jest.mock('../../Services/APIs/Expenses', () => ({
     createUserExpense: jest.fn(),
     updateUserExpense: jest.fn(),
 }))
+jest.mock('../../Services/APIs/Budgets')
 jest.mock('../../env', () => ({
     URI: 'http://mock-api.test',
 }));
+
+const mockStore = configureMockStore();
+const store = mockStore({
+  budget: { currentBudgetUuid: 'mock-uuid' }
+});
 
 describe('Dashboard', () => {
     beforeEach(() => {
@@ -41,6 +50,15 @@ describe('Dashboard', () => {
             value: localStorageMock,
         });
 
+        (getCurrentBudget as jest.Mock).mockResolvedValue(
+            {
+                "uuid": "TEST-UUID",
+                "month": "2024-12-12",
+                "expenses_total": 0,
+                "remaining_budget": 0,
+                "budget_amount": 0
+            }
+        )
         jest.clearAllMocks();
     })
 
@@ -52,7 +70,11 @@ describe('Dashboard', () => {
             date: '2024-10-10',
             uuid: 'TESTUUID'
         }])
-        render(<Dashboard />)
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
 
         await waitFor(() => {
             expect(screen.getByRole('heading', {
@@ -71,7 +93,11 @@ describe('Dashboard', () => {
             }],
             pages: 1
         })
-        render(<Dashboard />)
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
 
         await waitFor(() => {
             expect(screen.getByText('Amount')).toBeDefined()
@@ -89,7 +115,11 @@ describe('Dashboard', () => {
             items: [],
             pages: 1
         })
-        render(<Dashboard />)
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
 
         await waitFor(async () => {
             const createExpenseBttn = screen.getByRole('button', {
@@ -121,7 +151,11 @@ describe('Dashboard', () => {
             items: [],
             pages: 1
         })
-        render(<Dashboard />)
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
 
         await waitFor(async () => {
             const createExpenseBttn = screen.getByRole('button', {
@@ -157,7 +191,11 @@ describe('Dashboard', () => {
             uuid: 'TESTUUID'
         });
 
-        render(<Dashboard />)
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
 
         await waitFor(async () => {
             const createExpenseBttn = screen.getByRole('button', {
@@ -211,7 +249,11 @@ describe('Dashboard', () => {
             data: 'Deleted successfully',
         });
 
-        render(<Dashboard />);
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
 
         await waitFor(() => {
             expect(screen.getByText('Groceries')).toBeVisible();
@@ -250,7 +292,11 @@ describe('Dashboard', () => {
         });
 
 
-        render(<Dashboard />);
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
 
         await waitFor(() => {
             expect(screen.getByText('Groceries')).toBeVisible();
