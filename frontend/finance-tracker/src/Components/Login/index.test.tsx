@@ -49,15 +49,14 @@ describe('Login', () => {
             value: localStorageMock,
         });
 
-        (getCurrentBudget as jest.Mock).mockResolvedValue(
-            {
-                "uuid": "TEST-UUID",
-                "month": "2024-12-12",
-                "expenses_total": 0,
-                "remaining_budget": 0,
-                "budget_amount": 0
-            }
-        )
+
+        (getCurrentBudget as jest.Mock).mockResolvedValueOnce({
+            uuid: "mock-uuid",
+            budget_amount: 300,
+            month: "2025-01-01",
+            expenses_total: 200,
+            remaining_budget: 100
+        })
     })
 
     it('should render', () => {
