@@ -10,3 +10,16 @@ export interface NewExpensePayload {
     category: string;
     date: string;
 }
+
+export interface NewBudget {
+    amount: number;
+    date: Date;
+}
+
+export interface Budget {
+    uuid: string;
+    budget_amount: number;
+    month: string;
+    expenses_total: number;
+    remaining_budget: number;
+}

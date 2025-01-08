@@ -1,5 +1,6 @@
 import { Tabs } from "flowbite-react";
 
+import { Budgets } from "../Budgets";
 import { Expenses } from '../Expenses'
 
 export function Dashboard() {
@@ -9,7 +10,7 @@ export function Dashboard() {
             <Expenses />
           </Tabs.Item>
           <Tabs.Item active title="Budgets">
-            <h1>Budgets</h1>
+            <Budgets />
           </Tabs.Item>
         </Tabs>
       );
