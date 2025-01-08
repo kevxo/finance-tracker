@@ -30,6 +30,7 @@ describe('Dashboard', () => {
         const localStorageMock = (() => {
             let store: { [key: string]: string } = {
                 token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiVXNlck1vY2tVVUlEIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjg2MDAyNzAwfQ._V9T0XpD0QOV_pFymENcHZDtkDriE6jxmrW8fJaxCPE',
+                currentBudgetUuid: 'mock-uuid'
             };
 
             return {
@@ -50,15 +51,14 @@ describe('Dashboard', () => {
             value: localStorageMock,
         });
 
-        (getCurrentBudget as jest.Mock).mockResolvedValue(
-            {
-                "uuid": "TEST-UUID",
-                "month": "2024-12-12",
-                "expenses_total": 0,
-                "remaining_budget": 0,
-                "budget_amount": 0
-            }
-        )
+
+        (getCurrentBudget as jest.Mock).mockResolvedValueOnce({
+            uuid: "mock-uuid",
+            budget_amount: 300,
+            month: "2025-01-01",
+            expenses_total: 200,
+            remaining_budget: 100
+        })
         jest.clearAllMocks();
     })
 
@@ -325,5 +325,51 @@ describe('Dashboard', () => {
             expect(screen.getByText('$100.00')).toBeInTheDocument();
             expect(screen.queryByText('$200.00')).not.toBeInTheDocument();
         });
+    })
+
+    it("should be able to display a budget", async () => {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [
+              {
+                amount: 200,
+                category: 'Groceries',
+                date: '2024-10-10',
+                uuid: 'TESTUUID',
+              },
+            ],
+            pages: 1,
+        });
+
+        (getCurrentBudget as jest.Mock).mockResolvedValueOnce({
+            uuid: "mock-uuid",
+            budget_amount: 300,
+            month: "2025-01-01",
+            expenses_total: 200,
+            remaining_budget: 100
+        })
+
+
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
+
+        const budgetsTab = screen.getByRole('tab', {
+            name: /budgets/i
+        });
+
+        fireEvent.click(budgetsTab);
+
+        await waitFor(async () => {
+            expect(screen.getByRole('heading', {
+                name: /current budget/i
+            })).toBeVisible();
+
+            expect(screen.getByText(/budget amount: 300/i)).toBeVisible();
+            expect(screen.getByText(/budget month: 2025-01-01/i)).toBeVisible();
+            expect(screen.getByText(/expenses total: 200/i)).toBeVisible();
+            expect(screen.getByText(/remaining budget: 100/i)).toBeVisible();
+        })
     })
 })
