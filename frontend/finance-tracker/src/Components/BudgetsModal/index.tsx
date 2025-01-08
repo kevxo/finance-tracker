@@ -39,7 +39,7 @@ export function BudgetsModal({isOpen, handleOnClose}: BudgetModalProps) {
                 <Modal.Header />
                     <Modal.Body>
                         <div className="space-y-6">
-                            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Create new Expense</h3>
+                            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Create new Budget</h3>
                             <div>
                                 <div className="mb-2 block">
                                 <LabelWithAsterisk htmlFor="amount" label="Amount" />
