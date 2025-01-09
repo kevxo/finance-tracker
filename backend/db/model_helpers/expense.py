@@ -3,7 +3,7 @@ import uuid
 from typing import List
 
 from sqlalchemy.orm import Session
-from sqlalchemy import delete
+from sqlalchemy import delete, desc
 from db.schemas.expense import UserExpenseCreate, UpdateUserExpense
 from db.models.user import User
 from db.models.expense import Expense
@@ -25,7 +25,11 @@ def create_new_user_expense(
 
 
 def list_expenses(db: Session, user_uuid: str):
-    expenses = paginate(db.query(Expense).filter(Expense.user_uuid == user_uuid))
+    expenses = paginate(
+        db.query(Expense)
+        .filter(Expense.user_uuid == user_uuid)
+        .order_by(desc(Expense.date))
+    )
 
     return expenses
 
