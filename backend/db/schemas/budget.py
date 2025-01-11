@@ -26,3 +26,7 @@ class ShowBudgetHistory(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class BudgetUpdatePayload(BaseModel):
+    budget_amount: float
