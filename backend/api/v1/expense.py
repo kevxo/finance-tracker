@@ -18,7 +18,6 @@ from db.model_helpers.expense import (
     delete_user_expense,
 )
 
-from api.v1.login import get_current_user
 from helpers.authentication import verify_current_user
 
 router = APIRouter()
@@ -32,10 +31,9 @@ router = APIRouter()
 def create_expense(
     user_uuid: str,
     expense: UserExpenseCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(verify_current_user),
     db: Session = Depends(get_db),
 ):
-    verify_current_user(user_uuid, current_user.uuid)
 
     user_expense = create_new_user_expense(
         expense=expense, current_user=current_user, db=db
@@ -48,9 +46,8 @@ def create_expense(
 def get_all_expenses(
     user_uuid: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(verify_current_user),
 ):
-    verify_current_user(user_uuid, current_user.uuid)
 
     expenses = list_expenses(db, user_uuid)
 
@@ -62,9 +59,8 @@ def get_expense(
     user_uuid: str,
     expense_uuid: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(verify_current_user),
 ):
-    verify_current_user(user_uuid, current_user.uuid)
 
     expense = get_single_expense(db, user_uuid, expense_uuid)
 
@@ -85,9 +81,8 @@ def patch_expense(
     expense_uuid: str,
     body: UpdateUserExpense,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(verify_current_user),
 ):
-    verify_current_user(user_uuid, current_user.uuid)
 
     update_data = body.model_dump(exclude_unset=True)
     updated_expense = update_expense(db, expense_uuid, user_uuid, update_data)
@@ -106,9 +101,8 @@ def delete_expense(
     user_uuid: str,
     body: DeleteExpenses,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(verify_current_user),
 ):
-    verify_current_user(user_uuid, current_user.uuid)
 
     if len(body.uuids) == 0:
         raise HTTPException(
