@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
 import { Dashboard } from './index'
-import { getCurrentBudget, createNewBudget } from '../../Services/APIs/Budgets';
+import { getCurrentBudget, createNewBudget, updateUserBudget } from '../../Services/APIs/Budgets';
 import { getUserExpenses, createUserExpense, deleteUserExpense, updateUserExpense } from '../../Services/APIs/Expenses'
 
 jest.mock('../../Services/APIs/Expenses', () => ({
@@ -366,10 +366,10 @@ describe('Dashboard', () => {
                 name: /current budget/i
             })).toBeVisible();
 
-            expect(screen.getByText(/budget amount: 300/i)).toBeVisible();
+            expect(screen.getByText(/budget amount: \$ 300/i)).toBeVisible();
             expect(screen.getByText(/budget month: 2025-01-01/i)).toBeVisible();
-            expect(screen.getByText(/expenses total: 200/i)).toBeVisible();
-            expect(screen.getByText(/remaining budget: 100/i)).toBeVisible();
+            expect(screen.getByText(/expenses total: \$ 200/i)).toBeVisible();
+            expect(screen.getByText(/remaining budget: \$ 100/i)).toBeVisible();
         })
     })
 
@@ -436,6 +436,74 @@ describe('Dashboard', () => {
             }))
 
             expect(createNewBudget).toHaveBeenCalled()
+        })
+    })
+
+    it("should be able to edit budget", async () => {
+        (getUserExpenses as jest.Mock).mockResolvedValueOnce({
+            items: [
+              {
+                amount: 200,
+                category: 'Groceries',
+                date: '2024-10-10',
+                uuid: 'TESTUUID',
+              },
+            ],
+            pages: 1,
+        });
+
+        (getCurrentBudget as jest.Mock).mockResolvedValueOnce({
+            uuid: "mock-uuid",
+            budget_amount: 300,
+            month: "2025-01-01",
+            expenses_total: 200,
+            remaining_budget: 100
+        });
+
+        (updateUserBudget as jest.Mock).mockResolvedValueOnce({
+            uuid: "mock-uuid",
+            budget_amount: 290,
+            month: "2025-01-01",
+            expenses_total: 200,
+            remaining_budget: 100
+        });
+
+
+        render(
+            <Provider store={store}>
+                <Dashboard />
+            </Provider>
+        );
+
+        const budgetsTab = screen.getByRole('tab', {
+            name: /budgets/i
+        });
+
+        fireEvent.click(budgetsTab);
+
+        await waitFor(async () => {
+            expect(screen.getByRole('button', {
+                name: /edit budget/i
+            })).toBeEnabled()
+
+            const editBudget = screen.getByRole('button', {
+                name: /edit budget/i
+            })
+
+            fireEvent.click(editBudget);
+
+            const budgetAmount = screen.getByRole('spinbutton', {
+                name: /budget amount/i
+            })
+
+            fireEvent.change(budgetAmount, {target: {value: 290}})
+
+            fireEvent.click(screen.getByRole('button', {
+                name: /update budget/i
+            }))
+
+            expect(updateUserBudget).toHaveBeenCalled()
+            expect(screen.getByText(/budget amount: \$ 290/i)).toBeVisible();
         })
     })
 })
