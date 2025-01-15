@@ -3,7 +3,7 @@ import datetime
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from db.schemas.budget import CreateBudget
+from db.schemas.budget import CreateBudget, BudgetUpdatePayload
 from db.models.user import User
 from db.models.budget import Budget
 from db.models.expense import Expense
@@ -73,3 +73,19 @@ def get_all_budget_history(user_uuid: str, db: Session):
         )
 
     return budget_history
+
+
+def update_budget(
+    user_uuid: str,
+    budget_uuid: str,
+    budget_update_payload: BudgetUpdatePayload,
+    db: Session,
+):
+    db.query(Budget).filter(
+        Budget.uuid == budget_uuid, Budget.user_uuid == user_uuid
+    ).update(budget_update_payload)
+    db.commit()
+
+    updated_budget = retrieve_budget(budget_uuid, user_uuid, db)
+
+    return updated_budget

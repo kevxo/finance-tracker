@@ -90,3 +90,33 @@ def test_get_all_budget_history(client, db_session):
             assert response.json()[0]["uuid"] == budget.uuid
             assert response.json()[0]["expenses_total"]
             assert response.json()[0]["remaining_budget"]
+
+
+def test_update_budget(client, db_session):
+    """Test Update Budget"""
+    budget = create_random_budget(db_session)
+
+    with patch("jose.jwt.encode") as mock_encode:
+        mock_encode.return_value = "mocked_token"
+
+        body = {"username": "kevxo", "password": "Hello!"}
+
+        login = client.post("/api/v1/login", data=body)
+        token = login.json()["access_token"]
+
+        with patch("jose.jwt.decode") as mock_decode:
+            mock_decode.return_value = {"sub": "kevxo"}
+            update_body = {"budget_amount": 1400.00}
+
+            response = client.patch(
+                f"/api/v1/users/{budget.user_uuid}/budgets/{budget.uuid}",
+                headers={"Authorization": f"Bearer {token}"},
+                json=update_body,
+            )
+
+            assert response.status_code == 200
+            assert response.json()["budget_amount"] == update_body["budget_amount"]
+            assert response.json()["month"] == "2024-10-01"
+            assert response.json()["uuid"] == budget.uuid
+            assert response.json()["expenses_total"]
+            assert response.json()["remaining_budget"]
