@@ -23,6 +23,11 @@ class Settings:
         f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}",
     )
 
+    DATABASE_URL_DEV: str = os.getenv(
+        "DATABASE_URL_DEV",
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}",
+    )
+
     PROD_URL: str = os.getenv("PROD_URL")
 
     SECRET_KEY: str = os.getenv("SECRET_KEY")

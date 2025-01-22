@@ -100,7 +100,7 @@ export function Expenses() {
             <Table hoverable>
                 <TableHead>
                 <Table.HeadCell className="p-4">
-                    <Checkbox checked={expenses.length === selectedExpenses.length} onChange={() => handleAllExpenses()}/>
+                    <Checkbox checked={expenses.length > 0 && expenses.length === selectedExpenses.length} onChange={() => handleAllExpenses()}/>
                 </Table.HeadCell>
                 <TableHeadCell>Category</TableHeadCell>
                 <TableHeadCell>Amount</TableHeadCell>
