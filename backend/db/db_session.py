@@ -4,7 +4,9 @@ from typing import Generator
 
 from db.config import settings
 
-DATABASE_URL = settings.DATABASE_URL
+DATABASE_URL = (
+    settings.DATABASE_URL if settings.DATABASE_URL else settings.DATABASE_URL_DEV
+)
 print("Database URL is ", DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 
