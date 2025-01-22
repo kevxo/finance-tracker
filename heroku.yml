@@ -11,4 +11,4 @@ release:
   command:
     - cd backend && alembic upgrade head
 run:
-  web: docker compose up
+  web: docker-compose up
