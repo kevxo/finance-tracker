@@ -1,0 +1,12 @@
+setup:
+  addons:
+    - heroku-postgresql # Automatically provisions a PostgreSQL database
+
+build:
+  docker:
+    backend: ./backend/Dockerfile
+    frontend: ./frontend/finance-tracker/Dockerfile
+
+release:
+  command:
+    - backend: alembic upgrade head # Run migrations for backend
