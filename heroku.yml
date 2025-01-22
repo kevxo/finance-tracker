@@ -1,7 +1,7 @@
 build:
   docker:
     web:
-      image: kevxo09/finance-tracker-frontend:latest  # Frontend image from Docker Hub
+      dockerfile: Dockerfile  # Frontend image from Docker Hub
 
 release:
   command:
@@ -9,6 +9,5 @@ release:
 
 run:
   web:
-    image: kevxo09/finance-tracker-backend:latest  # Backend image from Docker Hub
     command:
       - docker compose up
