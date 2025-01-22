@@ -1,7 +1,7 @@
 build:
   docker:
-    web:
-      dockerfile: Dockerfile  # Frontend image from Docker Hub
+    backend: ./backend/Dockerfile
+    frontend: ./frontend/finance-tracker/Dockerfile  # Frontend image from Docker Hub
 
 release:
   command:
