@@ -1,13 +1,14 @@
 build:
   docker:
-    backend: ./backend/Dockerfile
-    frontend: ./frontend/finance-tracker/Dockerfile  # Frontend image from Docker Hub
-
-release:
-  command:
-    - cd backend && alembic upgrade head  # Run migrations on the backend service
+    web:
+      image: kevxo09/finance-tracker-backend:latest  # Reference to the backend image
+    frontend:
+      image: kevxo09/finance-tracker-frontend:latest  # Reference to the frontend image
 
 run:
   web:
     command:
-      - docker compose up
+      - docker run kevxo09/finance-tracker-backend:latest  # Run backend container
+    frontend:
+      command:
+        - docker run kevxo09/finance-tracker-frontend:latest  # Run frontend container
