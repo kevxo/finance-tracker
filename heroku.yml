@@ -5,10 +5,7 @@
         dockerfile: ./backend/Dockerfile
       frontend:
         dockerfile: ./frontend/finance-tracker/Dockerfile
-  release:
-    command:
-      - echo "Release phase: Run any migration or setup tasks here"
   run:
     web:
       command:
-        - docker compose up
+        - docker-compose up
