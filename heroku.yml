@@ -9,6 +9,6 @@ build:
     frontend: ./frontend/finance-tracker/Dockerfile
 release:
   command:
-    - backend: cd backend && alembic upgrade head
+    - cd backend && alembic upgrade head
 run:
   web: docker compose up
