@@ -1,15 +1,14 @@
-build:
-  docker:
-    web:
-      dockerfile: ./backend/Dockerfile  # Path to your backend Dockerfile
-    frontend:
-      dockerfile: ./frontend/finance-tracker/Dockerfile  # Path to your frontend Dockerfile
-
-release:
-  command:
-    - echo "Release phase: Run any migration or setup tasks here"  # You can add commands for migrations or other setup tasks if needed
-
-run:
-  web:
+---
+  build:
+    docker:
+      web:
+        dockerfile: ./backend/Dockerfile
+      frontend:
+        dockerfile: ./frontend/finance-tracker/Dockerfile
+  release:
     command:
-      - "docker compose up"
+      - echo "Release phase: Run any migration or setup tasks here"
+  run:
+    web:
+      command:
+        - docker compose up
