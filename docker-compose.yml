@@ -1,8 +1,6 @@
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: finance-tracker-backend
     container_name: backend-service
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     env_file:
@@ -16,9 +14,7 @@ services:
       - db
 
   frontend:
-    build:
-      context: ./frontend/finance-tracker
-      dockerfile: Dockerfile
+    image: finance-tracker-frontend
     container_name: frontend-service
     ports:
       - "3000:80"
