@@ -1,14 +1,15 @@
 build:
   docker:
     web:
-      image: kevxo09/finance-tracker-backend:latest  # Reference to the backend image
+      dockerfile: ./backend/Dockerfile  # Path to your backend Dockerfile
     frontend:
-      image: kevxo09/finance-tracker-frontend:latest  # Reference to the frontend image
+      dockerfile: ./frontend/finance-tracker/Dockerfile  # Path to your frontend Dockerfile
+
+release:
+  command:
+    - echo "Release phase: Run any migration or setup tasks here"  # You can add commands for migrations or other setup tasks if needed
 
 run:
   web:
     command:
-      - docker run kevxo09/finance-tracker-backend:latest  # Run backend container
-    frontend:
-      command:
-        - docker run kevxo09/finance-tracker-frontend:latest  # Run frontend container
+      - "docker compose up"
