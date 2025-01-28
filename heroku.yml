@@ -7,6 +7,10 @@ build:
 
 run:
   backend:
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    image: backend
+    command:
+      - uvicorn main:app --host 0.0.0.0 --port 8000
   frontend:
-    command: serve -s build -l 3000
+    image: frontend
+    command:
+      - serve -s build -l 3000
