@@ -1,7 +1,7 @@
-import { jwtDecode } from "jwt-decode";
+import jwt from 'jsonwebtoken'
 
 import { URI } from '../../env'
-import { Budget } from "../../Types";
+import { Budget, CustomJwtPayload } from "../../Types";
 
 interface BudgetCreate {
     budget_amount: number;
@@ -13,7 +13,7 @@ export interface BudgetUpdateBody {
 }
 
 export const getCurrentBudget = async (token: string, budgetUuid: string) => {
-    const decode = jwtDecode(token);
+    const decode = jwt.decode(token) as CustomJwtPayload;
     const userUuid = decode?.uuid;
 
     const url: string = `${URI}/api/v1/users/${userUuid}/budgets/${budgetUuid}`
@@ -39,7 +39,7 @@ export const getCurrentBudget = async (token: string, budgetUuid: string) => {
 }
 
 export const createNewBudget = async (token: string, budgetPayload: BudgetCreate) => {
-    const decode = jwtDecode(token);
+    const decode = jwt.decode(token) as CustomJwtPayload;
     const userUuid = decode?.uuid;
 
     const url: string = `${URI}/api/v1/users/${userUuid}/budgets`
@@ -67,7 +67,7 @@ export const createNewBudget = async (token: string, budgetPayload: BudgetCreate
 }
 
 export const updateUserBudget = async (token: string, payload: BudgetUpdateBody, budgetUuid: Budget["uuid"]) => {
-    const decode = jwtDecode(token);
+    const decode = jwt.decode(token) as CustomJwtPayload;
     const userUuid = decode?.uuid;
 
     const url: string = `${URI}/api/v1/users/${userUuid}/budgets/${budgetUuid}`

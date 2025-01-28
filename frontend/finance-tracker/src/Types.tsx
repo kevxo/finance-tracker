@@ -1,3 +1,5 @@
+import { JwtPayload } from 'jsonwebtoken'
+
 export interface Expense {
     uuid: string;
     amount: number;
@@ -22,4 +24,8 @@ export interface Budget {
     month: string;
     expenses_total: number;
     remaining_budget: number;
+}
+
+export interface CustomJwtPayload extends JwtPayload {
+    uuid: string;
 }
