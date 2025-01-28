@@ -8,4 +8,4 @@
   run:
     web:
       command:
-        - docker-compose up
+        - docker compose up
