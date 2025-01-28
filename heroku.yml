@@ -1,11 +1,19 @@
----
-  build:
-    docker:
-      web:
-        dockerfile: ./backend/Dockerfile
-      frontend:
-        dockerfile: ./frontend/finance-tracker/Dockerfile
-  run:
-    web:
-      command:
-        - docker compose up
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+
+build:
+  docker:
+    backend:
+      image: kevxo09/finance-tracker-backend:latest
+    frontend:
+      image: kevxo09/finance-tracker-frontend:latest
+
+run:
+  backend:
+    command:
+      - uvicorn main:app --host 0.0.0.0 --port 8000
+  frontend:
+    command:
+      - serve -s build -l 3000
