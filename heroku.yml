@@ -10,6 +10,8 @@ run:
     image: backend
     command:
       - uvicorn main:app --host 0.0.0.0 --port 8000
+    env:
+      DATABASE_URL: ${DATABASE_URL}
   frontend:
     image: frontend
     command:
